@@ -1,5 +1,5 @@
 // Package keystore is a simple key-value storage system with file and memory backing
-package keystore
+package keystore // import "vimagination.zapto.org/httpdir"
 
 import (
 	"io"
