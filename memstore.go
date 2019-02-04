@@ -12,6 +12,7 @@ type memStore struct {
 	data map[string]memio.Buffer
 }
 
+// NewMemStore creates a new memory-backed key-value store
 func NewMemStore() Store {
 	ms := new(memStore)
 	ms.init()

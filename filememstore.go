@@ -11,6 +11,8 @@ type fileBackedMemStore struct {
 	memStore
 }
 
+// NewFileBackedMemStore create s new Store which uses the filesystem for
+// permanent storage, but uses memory for caching
 func NewFileBackedMemStore(baseDir, tmpDir string) (Store, error) {
 	fs := new(fileBackedMemStore)
 	if err := fs.fileStore.init(baseDir, tmpDir); err != nil {
@@ -29,7 +31,7 @@ func (fs *fileBackedMemStore) Get(key string, r io.ReaderFrom) error {
 			return err
 		}
 		fs.memStore.set(key, buf)
-		r.ReadFrom(&buf)
+		_, err = r.ReadFrom(&buf)
 	}
 	return err
 }

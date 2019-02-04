@@ -14,6 +14,7 @@ type fileStore struct {
 	baseDir, tmpDir string
 }
 
+// NewFileStore creates a file backed key-value store
 func NewFileStore(baseDir, tmpDir string) (Store, error) {
 	fs := new(fileStore)
 	if err := fs.init(baseDir, tmpDir); err != nil {
