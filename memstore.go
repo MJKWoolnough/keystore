@@ -40,8 +40,8 @@ func (ms *memStore) get(key string) memio.Buffer {
 }
 
 func (ms *memStore) Set(key string, w io.WriterTo) error {
-	var d memio.Buffer
-	if _, err := w.WriteTo(&d); err != nil {
+	d := make(memio.Buffer, 0)
+	if _, err := w.WriteTo(&d); err != nil && err != io.EOF {
 		return err
 	}
 	ms.set(key, d)
