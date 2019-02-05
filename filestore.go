@@ -59,7 +59,7 @@ func (fs *fileStore) Set(key string, w io.WriterTo) error {
 	if err != nil {
 		return errors.WithContext("error opening file for writing: ", err)
 	}
-	if _, err = w.WriteTo(f); err != nil {
+	if _, err = w.WriteTo(f); err != nil && err != io.EOF {
 		f.Close()
 		return errors.WithContext("error writing to file: ", err)
 	} else if err = f.Close(); err != nil {
