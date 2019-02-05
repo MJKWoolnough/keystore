@@ -2,6 +2,7 @@ package keystore
 
 import (
 	"io"
+	"sort"
 	"sync"
 
 	"vimagination.zapto.org/memio"
@@ -64,4 +65,16 @@ func (ms *memStore) Remove(key string) error {
 	delete(ms.data, key)
 	ms.mu.Unlock()
 	return nil
+}
+
+// Keys returns a sorted slice of all of the keys
+func (ms *memStore) Keys() []string {
+	ms.mu.RLock()
+	s := make([]string, 0, len(ms.data))
+	for key := range ms.data {
+		s = append(s, key)
+	}
+	ms.mu.RUnlock()
+	sort.Strings(s)
+	return s
 }

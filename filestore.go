@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"vimagination.zapto.org/errors"
@@ -83,6 +84,20 @@ func (fs *fileStore) Remove(key string) error {
 		return ErrUnknownKey
 	}
 	return nil
+}
+
+// Keys returns a sorted slice of all of the keys
+func (fs *fileStore) Keys() []string {
+	d, err := os.Open(fs.baseDir)
+	if err != nil {
+		return nil
+	}
+	s, err := d.Readdirnames(-1)
+	if err != nil {
+		return nil
+	}
+	sort.Strings(s)
+	return s
 }
 
 func testKey(key string) error {

@@ -57,3 +57,8 @@ func (fs *fileBackedMemStore) Remove(key string) error {
 	fs.memStore.Remove(key)
 	return nil
 }
+
+// Keys returns a sorted slice of all of the keys
+func (fs *fileBackedMemStore) Keys() []string {
+	return fs.fileStore.Keys()
+}
