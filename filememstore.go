@@ -39,10 +39,10 @@ func (fs *fileBackedMemStore) Get(key string, r io.ReaderFrom) error {
 func (fs *fileBackedMemStore) Set(key string, w io.WriterTo) error {
 	var buf memio.Buffer
 	_, err := w.WriteTo(&buf)
-	if err != nil {
+	if err != nil && err != io.EOF {
 		return err
 	}
-	if err := fs.fileStore.Set(key, &buf); err != nil {
+	if err = fs.fileStore.Set(key, &buf); err != nil {
 		return err
 	}
 	fs.memStore.set(key, buf)
