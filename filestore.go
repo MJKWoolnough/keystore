@@ -27,6 +27,14 @@ func NewFileStore(baseDir, tmpDir string) (Store, error) {
 func (fs *fileStore) init(baseDir, tmpDir string) error {
 	fs.baseDir = baseDir
 	fs.tmpDir = tmpDir
+	if err := os.MkdirAll(fs.baseDir, 0700); err != nil {
+		return errors.WithContext("error creating data dir: ", err)
+	}
+	if tmpDir != "" {
+		if err := os.MkdirAll(tmpDir, 0700); err != nil {
+			return errors.WithContext("error creating temp dir: ", err)
+		}
+	}
 	return nil
 }
 
