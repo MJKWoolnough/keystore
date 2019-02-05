@@ -1,6 +1,7 @@
 package keystore
 
 import (
+	"reflect"
 	"testing"
 
 	"vimagination.zapto.org/memio"
@@ -17,6 +18,8 @@ func testStore(t *testing.T, s Store) {
 		t.Errorf("test 2: expecting error ErrUnknownKey, got %s", err)
 	} else if err = s.Set("key1", &buf); err != nil {
 		t.Errorf("test 3: unexpected error: %s", err)
+	} else if ss := s.Keys(); !reflect.DeepEqual(ss, []string{"key1"}) {
+		t.Errorf("test 3: expecting key in Store")
 	} else if err = s.Get("key1", &buf); err != nil {
 		t.Errorf("test 4: unexpected error: %s", err)
 	} else if len(buf) > 0 {
@@ -27,6 +30,8 @@ func testStore(t *testing.T, s Store) {
 			t.Errorf("test 6: unexpected error: %s", err)
 		} else if len(buf) > 0 {
 			t.Errorf("test 6: unread data: %v", err)
+		} else if ss := s.Keys(); !reflect.DeepEqual(ss, []string{"key1", "key2"}) {
+			t.Errorf("test 6: expecting key in Store")
 		} else if err = s.Get("key2", &buf); err != nil {
 			t.Errorf("test 7: unexpected error: %s", err)
 		} else if string(buf) != testData {
