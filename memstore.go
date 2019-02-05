@@ -5,6 +5,7 @@ import (
 	"sort"
 	"sync"
 
+	"vimagination.zapto.org/byteio"
 	"vimagination.zapto.org/memio"
 )
 
@@ -13,8 +14,14 @@ type memStore struct {
 	data map[string]memio.Buffer
 }
 
+type MemStore interface {
+	Store
+	io.WriterTo
+	io.ReaderFrom
+}
+
 // NewMemStore creates a new memory-backed key-value store
-func NewMemStore() Store {
+func NewMemStore() MemStore {
 	ms := new(memStore)
 	ms.init()
 	return ms
@@ -65,6 +72,34 @@ func (ms *memStore) Remove(key string) error {
 	delete(ms.data, key)
 	ms.mu.Unlock()
 	return nil
+}
+
+func (ms *memStore) WriteTo(w io.Writer) (int64, error) {
+	lw := byteio.StickyLittleEndianWriter{Writer: w}
+	ms.mu.RLock()
+	for key, value := range ms.data {
+		lw.WriteStringX(key)
+		lw.WriteUintX(uint64(len(value)))
+		lw.Write(value)
+	}
+	ms.mu.RUnlock()
+	return lw.Count, lw.Err
+}
+
+func (ms *memStore) ReadFrom(r io.Reader) (int64, error) {
+	lr := byteio.StickyLittleEndianReader{Reader: r}
+	ms.mu.Lock()
+	for {
+		key := lr.ReadStringX()
+		buf := make(memio.Buffer, lr.ReadUintX())
+		lr.Read(buf)
+		if lr.Err != nil {
+			break
+		}
+		ms.data[key] = buf
+	}
+	ms.mu.Unlock()
+	return lr.Count, lr.Err
 }
 
 // Keys returns a sorted slice of all of the keys
