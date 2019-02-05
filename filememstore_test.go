@@ -13,7 +13,7 @@ func TestFileMemStore(t *testing.T) {
 		return
 	}
 	defer os.RemoveAll(dir)
-	s, err := NewFileBackedMemStore(dir, "")
+	s, err := NewFileBackedMemStore(dir, "", nil)
 	if err != nil {
 		t.Errorf("received unexpected error creating FileStore: %s", err)
 		return
@@ -34,7 +34,7 @@ func TestFileMemStoreWithTmp(t *testing.T) {
 		return
 	}
 	defer os.RemoveAll(tmp)
-	s, err := NewFileBackedMemStore(dir, "")
+	s, err := NewFileBackedMemStore(dir, "", nil)
 	if err != nil {
 		t.Errorf("received unexpected error creating FileStore: %s", err)
 		return

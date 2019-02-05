@@ -13,9 +13,9 @@ type fileBackedMemStore struct {
 
 // NewFileBackedMemStore create s new Store which uses the filesystem for
 // permanent storage, but uses memory for caching
-func NewFileBackedMemStore(baseDir, tmpDir string) (Store, error) {
+func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (Store, error) {
 	fs := new(fileBackedMemStore)
-	if err := fs.fileStore.init(baseDir, tmpDir); err != nil {
+	if err := fs.fileStore.init(baseDir, tmpDir, mangler); err != nil {
 		return nil, err
 	}
 	fs.memStore.init()
