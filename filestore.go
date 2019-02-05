@@ -12,21 +12,21 @@ import (
 	"vimagination.zapto.org/errors"
 )
 
-type fileStore struct {
+type FileStore struct {
 	baseDir, tmpDir string
 	mangler         Mangler
 }
 
 // NewFileStore creates a file backed key-value store
-func NewFileStore(baseDir, tmpDir string, mangler Mangler) (Store, error) {
-	fs := new(fileStore)
+func NewFileStore(baseDir, tmpDir string, mangler Mangler) (*FileStore, error) {
+	fs := new(FileStore)
 	if err := fs.init(baseDir, tmpDir, mangler); err != nil {
 		return nil, err
 	}
 	return fs, nil
 }
 
-func (fs *fileStore) init(baseDir, tmpDir string, mangler Mangler) error {
+func (fs *FileStore) init(baseDir, tmpDir string, mangler Mangler) error {
 	if err := os.MkdirAll(baseDir, 0700); err != nil {
 		return errors.WithContext("error creating data dir: ", err)
 	}
@@ -44,7 +44,7 @@ func (fs *fileStore) init(baseDir, tmpDir string, mangler Mangler) error {
 	return nil
 }
 
-func (fs *fileStore) Get(key string, r io.ReaderFrom) error {
+func (fs *FileStore) Get(key string, r io.ReaderFrom) error {
 	key = fs.mangleKey(key, false)
 	f, err := os.Open(filepath.Join(fs.baseDir, key))
 	if err != nil {
@@ -58,7 +58,7 @@ func (fs *fileStore) Get(key string, r io.ReaderFrom) error {
 	return err
 }
 
-func (fs *fileStore) Set(key string, w io.WriterTo) error {
+func (fs *FileStore) Set(key string, w io.WriterTo) error {
 	key = fs.mangleKey(key, true)
 	var (
 		f   *os.File
@@ -88,7 +88,7 @@ func (fs *fileStore) Set(key string, w io.WriterTo) error {
 	return nil
 }
 
-func (fs *fileStore) Remove(key string) error {
+func (fs *FileStore) Remove(key string) error {
 	key = fs.mangleKey(key, false)
 	if os.IsNotExist((os.Remove(filepath.Join(fs.baseDir, key)))) {
 		return ErrUnknownKey
@@ -97,13 +97,13 @@ func (fs *fileStore) Remove(key string) error {
 }
 
 // Keys returns a sorted slice of all of the keys
-func (fs *fileStore) Keys() []string {
+func (fs *FileStore) Keys() []string {
 	s := fs.getDirContents("")
 	sort.Strings(s)
 	return s
 }
 
-func (fs *fileStore) mangleKey(key string, prepare bool) string {
+func (fs *FileStore) mangleKey(key string, prepare bool) string {
 	parts := fs.mangler.Encode(key)
 	if len(parts) == 0 {
 		return ""
@@ -115,7 +115,7 @@ func (fs *fileStore) mangleKey(key string, prepare bool) string {
 	return strings.Join(parts, string(filepath.Separator))
 }
 
-func (fs *fileStore) getDirContents(dir string) []string {
+func (fs *FileStore) getDirContents(dir string) []string {
 	d, err := os.Open(filepath.Join(fs.baseDir, dir))
 	if err != nil {
 		return nil
@@ -139,6 +139,7 @@ func (fs *fileStore) getDirContents(dir string) []string {
 	return names
 }
 
+// Mangler is an interface for the methods required to un/mangle a key
 type Mangler interface {
 	Encode(string) []string
 	Decode([]string) (string, error)
@@ -161,5 +162,6 @@ func (base64Mangler) Decode(parts []string) (string, error) {
 	return string(b), nil
 }
 
-// Default Base64 mangler
+// Base64Mangler represents the default Mangler that simple base64 encodes the
+// key
 var Base64Mangler Mangler = base64Mangler{}

@@ -9,29 +9,23 @@ import (
 	"vimagination.zapto.org/memio"
 )
 
-type memStore struct {
+type MemStore struct {
 	mu   sync.RWMutex
 	data map[string]memio.Buffer
 }
 
-type MemStore interface {
-	Store
-	io.WriterTo
-	io.ReaderFrom
-}
-
 // NewMemStore creates a new memory-backed key-value store
-func NewMemStore() MemStore {
-	ms := new(memStore)
+func NewMemStore() *MemStore {
+	ms := new(MemStore)
 	ms.init()
 	return ms
 }
 
-func (ms *memStore) init() {
+func (ms *MemStore) init() {
 	ms.data = make(map[string]memio.Buffer)
 }
 
-func (ms *memStore) Get(key string, r io.ReaderFrom) error {
+func (ms *MemStore) Get(key string, r io.ReaderFrom) error {
 	d := ms.get(key)
 	if d == nil {
 		return ErrUnknownKey
@@ -40,14 +34,14 @@ func (ms *memStore) Get(key string, r io.ReaderFrom) error {
 	return err
 }
 
-func (ms *memStore) get(key string) memio.Buffer {
+func (ms *MemStore) get(key string) memio.Buffer {
 	ms.mu.RLock()
 	d := ms.data[key]
 	ms.mu.RUnlock()
 	return d
 }
 
-func (ms *memStore) Set(key string, w io.WriterTo) error {
+func (ms *MemStore) Set(key string, w io.WriterTo) error {
 	d := make(memio.Buffer, 0)
 	if _, err := w.WriteTo(&d); err != nil && err != io.EOF {
 		return err
@@ -56,13 +50,13 @@ func (ms *memStore) Set(key string, w io.WriterTo) error {
 	return nil
 }
 
-func (ms *memStore) set(key string, d memio.Buffer) {
+func (ms *MemStore) set(key string, d memio.Buffer) {
 	ms.mu.Lock()
 	ms.data[key] = d
 	ms.mu.Unlock()
 }
 
-func (ms *memStore) Remove(key string) error {
+func (ms *MemStore) Remove(key string) error {
 	ms.mu.Lock()
 	_, ok := ms.data[key]
 	if !ok {
@@ -74,7 +68,7 @@ func (ms *memStore) Remove(key string) error {
 	return nil
 }
 
-func (ms *memStore) WriteTo(w io.Writer) (int64, error) {
+func (ms *MemStore) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
 	ms.mu.RLock()
 	for key, value := range ms.data {
@@ -86,7 +80,7 @@ func (ms *memStore) WriteTo(w io.Writer) (int64, error) {
 	return lw.Count, lw.Err
 }
 
-func (ms *memStore) ReadFrom(r io.Reader) (int64, error) {
+func (ms *MemStore) ReadFrom(r io.Reader) (int64, error) {
 	lr := byteio.StickyLittleEndianReader{Reader: r}
 	ms.mu.Lock()
 	for {
@@ -103,7 +97,7 @@ func (ms *memStore) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // Keys returns a sorted slice of all of the keys
-func (ms *memStore) Keys() []string {
+func (ms *MemStore) Keys() []string {
 	ms.mu.RLock()
 	s := make([]string, 0, len(ms.data))
 	for key := range ms.data {

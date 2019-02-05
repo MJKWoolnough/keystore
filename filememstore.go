@@ -6,15 +6,15 @@ import (
 	"vimagination.zapto.org/memio"
 )
 
-type fileBackedMemStore struct {
-	fileStore
-	memStore
+type FileBackedMemStore struct {
+	fileStore FileStore
+	memStore  MemStore
 }
 
 // NewFileBackedMemStore create s new Store which uses the filesystem for
 // permanent storage, but uses memory for caching
-func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (Store, error) {
-	fs := new(fileBackedMemStore)
+func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (*FileBackedMemStore, error) {
+	fs := new(FileBackedMemStore)
 	if err := fs.fileStore.init(baseDir, tmpDir, mangler); err != nil {
 		return nil, err
 	}
@@ -22,7 +22,7 @@ func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (Store, erro
 	return fs, nil
 }
 
-func (fs *fileBackedMemStore) Get(key string, r io.ReaderFrom) error {
+func (fs *FileBackedMemStore) Get(key string, r io.ReaderFrom) error {
 	err := fs.memStore.Get(key, r)
 	if err == ErrUnknownKey {
 		var buf memio.Buffer
@@ -36,7 +36,7 @@ func (fs *fileBackedMemStore) Get(key string, r io.ReaderFrom) error {
 	return err
 }
 
-func (fs *fileBackedMemStore) Set(key string, w io.WriterTo) error {
+func (fs *FileBackedMemStore) Set(key string, w io.WriterTo) error {
 	var buf memio.Buffer
 	_, err := w.WriteTo(&buf)
 	if err != nil && err != io.EOF {
@@ -50,7 +50,7 @@ func (fs *fileBackedMemStore) Set(key string, w io.WriterTo) error {
 	return nil
 }
 
-func (fs *fileBackedMemStore) Remove(key string) error {
+func (fs *FileBackedMemStore) Remove(key string) error {
 	if err := fs.fileStore.Remove(key); err != nil {
 		return err
 	}
@@ -59,6 +59,6 @@ func (fs *fileBackedMemStore) Remove(key string) error {
 }
 
 // Keys returns a sorted slice of all of the keys
-func (fs *fileBackedMemStore) Keys() []string {
+func (fs *FileBackedMemStore) Keys() []string {
 	return fs.fileStore.Keys()
 }
