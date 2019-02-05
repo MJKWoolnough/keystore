@@ -35,6 +35,9 @@ func (fs *fileStore) Get(key string, r io.ReaderFrom) error {
 	}
 	f, err := os.Open(filepath.Join(fs.baseDir, key))
 	if err != nil {
+		if os.IsNotExist(err) {
+			return ErrUnknownKey
+		}
 		return errors.WithContext("error opening key file: ", err)
 	}
 	_, err = r.ReadFrom(f)
