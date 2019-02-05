@@ -1,12 +1,12 @@
 package keystore
 
 import (
+	"encoding/base64"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
-	"strings"
 
 	"vimagination.zapto.org/errors"
 )
@@ -31,9 +31,7 @@ func (fs *fileStore) init(baseDir, tmpDir string) error {
 }
 
 func (fs *fileStore) Get(key string, r io.ReaderFrom) error {
-	if err := testKey(key); err != nil {
-		return err
-	}
+	key = base64.URLEncoding.EncodeToString([]byte(key))
 	f, err := os.Open(filepath.Join(fs.baseDir, key))
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -47,11 +45,11 @@ func (fs *fileStore) Get(key string, r io.ReaderFrom) error {
 }
 
 func (fs *fileStore) Set(key string, w io.WriterTo) error {
-	err := testKey(key)
-	if err != nil {
-		return err
-	}
-	var f *os.File
+	key = base64.URLEncoding.EncodeToString([]byte(key))
+	var (
+		f   *os.File
+		err error
+	)
 	if fs.tmpDir != "" {
 		f, err = ioutil.TempFile(fs.tmpDir, "keystore")
 	} else {
@@ -77,9 +75,7 @@ func (fs *fileStore) Set(key string, w io.WriterTo) error {
 }
 
 func (fs *fileStore) Remove(key string) error {
-	if err := testKey(key); err != nil {
-		return err
-	}
+	key = base64.URLEncoding.EncodeToString([]byte(key))
 	if os.IsNotExist((os.Remove(filepath.Join(fs.baseDir, key)))) {
 		return ErrUnknownKey
 	}
@@ -96,13 +92,14 @@ func (fs *fileStore) Keys() []string {
 	if err != nil {
 		return nil
 	}
-	sort.Strings(s)
-	return s
-}
-
-func testKey(key string) error {
-	if strings.ContainsRune(key, filepath.Separator) {
-		return ErrInvalidKey
+	ss := make([]string, 0, len(s))
+	for _, name := range s {
+		bname, err := base64.URLEncoding.DecodeString(name)
+		if err != nil {
+			continue
+		}
+		ss = append(ss, string(bname))
 	}
-	return nil
+	sort.Strings(ss)
+	return ss
 }
