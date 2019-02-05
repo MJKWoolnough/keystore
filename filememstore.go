@@ -42,7 +42,8 @@ func (fs *fileBackedMemStore) Set(key string, w io.WriterTo) error {
 	if err != nil && err != io.EOF {
 		return err
 	}
-	if err = fs.fileStore.Set(key, &buf); err != nil {
+	fbuf := buf
+	if err = fs.fileStore.Set(key, &fbuf); err != nil {
 		return err
 	}
 	fs.memStore.set(key, buf)
