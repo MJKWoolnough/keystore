@@ -22,6 +22,7 @@ type Store interface {
 	Get(string, io.ReaderFrom) error
 	Set(string, io.WriterTo) error
 	Remove(string) error
+	Keys() []string
 }
 ```
 
