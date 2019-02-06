@@ -282,6 +282,14 @@ func (ms *MemStore) Get(key string, r io.ReaderFrom) error
 ```
 Get retrieves the key data from memory
 
+#### func (*MemStore) GetAll
+
+```go
+func (ms *MemStore) GetAll(data map[string]io.ReaderFrom) error
+```
+GetAll retrieves data for all of the keys given. Useful to reduce locking. If
+any of the keys do not exist no data will be read.
+
 #### func (*MemStore) Keys
 
 ```go
@@ -310,6 +318,14 @@ Remove deletes the key data from memory
 func (ms *MemStore) Set(key string, w io.WriterTo) error
 ```
 Set stores the key data in memory
+
+#### func (*MemStore) SetAll
+
+```go
+func (ms *MemStore) SetAll(data map[string]io.WriterTo) error
+```
+SetAll set data for all of the keys given. Useful to reduce locking. Will return
+the first error found, so may not set all data.
 
 #### func (*MemStore) WriteTo
 
