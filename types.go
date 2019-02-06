@@ -19,9 +19,9 @@ func (t *String) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the string to the Writer
-func (t *String) WriteTo(w io.Writer) (int64, error) {
+func (t String) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteStringX(string(*t))
+	lw.WriteStringX(string(t))
 	return lw.Count, lw.Err
 }
 
@@ -36,9 +36,9 @@ func (t *Uint8) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the uint8 to the Writer
-func (t *Uint8) WriteTo(w io.Writer) (int64, error) {
+func (t Uint8) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteUint8(uint8(*t))
+	lw.WriteUint8(uint8(t))
 	return lw.Count, lw.Err
 }
 
@@ -53,9 +53,9 @@ func (t *Uint16) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the uint16 to the Writer
-func (t *Uint16) WriteTo(w io.Writer) (int64, error) {
+func (t Uint16) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteUint16(uint16(*t))
+	lw.WriteUint16(uint16(t))
 	return lw.Count, lw.Err
 }
 
@@ -70,9 +70,9 @@ func (t *Uint32) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the uint32 to the Writer
-func (t *Uint32) WriteTo(w io.Writer) (int64, error) {
+func (t Uint32) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteUint32(uint32(*t))
+	lw.WriteUint32(uint32(t))
 	return lw.Count, lw.Err
 }
 
@@ -87,9 +87,9 @@ func (t *Uint64) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the uint64 to the Writer
-func (t *Uint64) WriteTo(w io.Writer) (int64, error) {
+func (t Uint64) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteUint64(uint64(*t))
+	lw.WriteUint64(uint64(t))
 	return lw.Count, lw.Err
 }
 
@@ -104,9 +104,9 @@ func (t *Int8) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the int8 to the Writer
-func (t *Int8) WriteTo(w io.Writer) (int64, error) {
+func (t Int8) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteInt8(int8(*t))
+	lw.WriteInt8(int8(t))
 	return lw.Count, lw.Err
 }
 
@@ -121,9 +121,9 @@ func (t *Int16) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the int16 to the Writer
-func (t *Int16) WriteTo(w io.Writer) (int64, error) {
+func (t Int16) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteInt16(int16(*t))
+	lw.WriteInt16(int16(t))
 	return lw.Count, lw.Err
 }
 
@@ -138,9 +138,9 @@ func (t *Int32) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the int32 to the Writer
-func (t *Int32) WriteTo(w io.Writer) (int64, error) {
+func (t Int32) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteInt32(int32(*t))
+	lw.WriteInt32(int32(t))
 	return lw.Count, lw.Err
 }
 
@@ -155,9 +155,9 @@ func (t *Int64) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the int64 to the Writer
-func (t *Int64) WriteTo(w io.Writer) (int64, error) {
+func (t Int64) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteInt64(int64(*t))
+	lw.WriteInt64(int64(t))
 	return lw.Count, lw.Err
 }
 
@@ -172,9 +172,9 @@ func (t *Float32) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the float32 to the Writer
-func (t *Float32) WriteTo(w io.Writer) (int64, error) {
+func (t Float32) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteFloat32(float32(*t))
+	lw.WriteFloat32(float32(t))
 	return lw.Count, lw.Err
 }
 
@@ -189,8 +189,8 @@ func (t *Float64) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the float64 to the Writer
-func (t *Float64) WriteTo(w io.Writer) (int64, error) {
+func (t Float64) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.WriteFloat64(float64(*t))
+	lw.WriteFloat64(float64(t))
 	return lw.Count, lw.Err
 }

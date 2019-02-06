@@ -31,9 +31,9 @@ func (t *$typeName) ReadFrom(r io.Reader) (int64, error) {
 }
 
 // WriteTo encodes the $type to the Writer
-func (t *$typeName) WriteTo(w io.Writer) (int64, error) {
+func (t $typeName) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.Write$fName($type(*t))
+	lw.Write$fName($type(t))
 	return lw.Count, lw.Err
 }
 HEREDOC
