@@ -253,6 +253,12 @@ var Base64Mangler Mangler = base64Mangler{}
 ```
 Base64Mangler represents the default Mangler that simple base64 encodes the key
 
+```go
+var NoMangle Mangler = noMangle{}
+```
+NoMangle is a mangler that performs no mangling. This should only be used when
+you are certain that there are no filesystem special characters in the key name
+
 #### type MemStore
 
 ```go
