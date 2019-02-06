@@ -93,6 +93,23 @@ func (t Uint64) WriteTo(w io.Writer) (int64, error) {
 	return lw.Count, lw.Err
 }
 
+// Uint is a uint that implements io.ReaderFrom and io.WriterTo
+type Uint uint
+
+// ReadFrom decodes the uint from the Reader
+func (t *Uint) ReadFrom(r io.Reader) (int64, error) {
+	lr := byteio.StickyLittleEndianReader{Reader: r}
+	*t = Uint(lr.ReadUintX())
+	return lr.Count, lr.Err
+}
+
+// WriteTo encodes the uint to the Writer
+func (t Uint) WriteTo(w io.Writer) (int64, error) {
+	lw := byteio.StickyLittleEndianWriter{Writer: w}
+	lw.WriteUintX(uint64(t))
+	return lw.Count, lw.Err
+}
+
 // Int8 is a int8 that implements io.ReaderFrom and io.WriterTo
 type Int8 int8
 
@@ -158,6 +175,23 @@ func (t *Int64) ReadFrom(r io.Reader) (int64, error) {
 func (t Int64) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
 	lw.WriteInt64(int64(t))
+	return lw.Count, lw.Err
+}
+
+// Int is a int that implements io.ReaderFrom and io.WriterTo
+type Int int
+
+// ReadFrom decodes the int from the Reader
+func (t *Int) ReadFrom(r io.Reader) (int64, error) {
+	lr := byteio.StickyLittleEndianReader{Reader: r}
+	*t = Int(lr.ReadIntX())
+	return lr.Count, lr.Err
+}
+
+// WriteTo encodes the int to the Writer
+func (t Int) WriteTo(w io.Writer) (int64, error) {
+	lw := byteio.StickyLittleEndianWriter{Writer: w}
+	lw.WriteIntX(int64(t))
 	return lw.Count, lw.Err
 }
 

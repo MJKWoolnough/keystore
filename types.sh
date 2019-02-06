@@ -1,6 +1,6 @@
 #!/bin/bash
 
-allTypes="String Uint8 Uint16 Uint32 Uint64 Int8 Int16 Int32 Int64 Float32 Float64";
+allTypes="String Uint8 Uint16 Uint32 Uint64 Uint Int8 Int16 Int32 Int64 Int Float32 Float64";
 
 (
 	cat <<HEREDOC
@@ -18,6 +18,11 @@ HEREDOC
 		type="$(echo -n "$typeName" | tr A-Z a-z)";
 		fName="$typeName";
 		[ "$type" = "string" ] && fName="${typeName}X";
+		wType="$type";
+		[ "$type" = "uint" -o "$type" = "int" ] && {
+			fName="${typeName}X";
+			wType="${type}64";
+		}
 		cat <<HEREDOC
 
 // $typeName is a $type that implements io.ReaderFrom and io.WriterTo
@@ -33,7 +38,7 @@ func (t *$typeName) ReadFrom(r io.Reader) (int64, error) {
 // WriteTo encodes the $type to the Writer
 func (t $typeName) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
-	lw.Write$fName($type(t))
+	lw.Write$fName($wType(t))
 	return lw.Count, lw.Err
 }
 HEREDOC
