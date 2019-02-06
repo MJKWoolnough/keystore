@@ -166,6 +166,16 @@ func (base64Mangler) Decode(parts []string) (string, error) {
 	return string(b), nil
 }
 
+type noMangle struct{}
+
+func (noMangle) Encode(name string) []string           { return []string{name} }
+func (noMangle) Decode(parts []string) (string, error) { return strings.Join(parts, ""), nil }
+
 // Base64Mangler represents the default Mangler that simple base64 encodes the
 // key
 var Base64Mangler Mangler = base64Mangler{}
+
+// NoMangle is a mangler that performs no mangling. This should only be used
+// when you are certain that there are no filesystem special characters in the
+// key name
+var NoMangle Mangler = noMangle{}
