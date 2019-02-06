@@ -149,6 +149,28 @@ func (t Float64) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the float64 to the Writer
 
+#### type Int
+
+```go
+type Int int
+```
+
+Int is a int that implements io.ReaderFrom and io.WriterTo
+
+#### func (*Int) ReadFrom
+
+```go
+func (t *Int) ReadFrom(r io.Reader) (int64, error)
+```
+ReadFrom decodes the int from the Reader
+
+#### func (Int) WriteTo
+
+```go
+func (t Int) WriteTo(w io.Writer) (int64, error)
+```
+WriteTo encodes the int to the Writer
+
 #### type Int16
 
 ```go
@@ -369,6 +391,28 @@ ReadFrom decodes the string from the Reader
 func (t String) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the string to the Writer
+
+#### type Uint
+
+```go
+type Uint uint
+```
+
+Uint is a uint that implements io.ReaderFrom and io.WriterTo
+
+#### func (*Uint) ReadFrom
+
+```go
+func (t *Uint) ReadFrom(r io.Reader) (int64, error)
+```
+ReadFrom decodes the uint from the Reader
+
+#### func (Uint) WriteTo
+
+```go
+func (t Uint) WriteTo(w io.Writer) (int64, error)
+```
+WriteTo encodes the uint to the Writer
 
 #### type Uint16
 
