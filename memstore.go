@@ -36,6 +36,28 @@ func (ms *MemStore) Get(key string, r io.ReaderFrom) error {
 	return err
 }
 
+// GetAll retrieves data for all of the keys given. Useful to reduce locking.
+// If any of the keys do not exist no data will be read.
+func (ms *MemStore) GetAll(data map[string]io.ReaderFrom) error {
+	var err error
+	ms.mu.RLock()
+	for k := range data {
+		_, ok := ms.data[k]
+		if !ok {
+			ms.mu.RUnlock()
+			return ErrUnknownKey
+		}
+	}
+	for k, d := range data {
+		buf := ms.data[k]
+		if _, err = d.ReadFrom(&buf); err != nil {
+			return err
+		}
+	}
+	ms.mu.RUnlock()
+	return err
+}
+
 func (ms *MemStore) get(key string) memio.Buffer {
 	ms.mu.RLock()
 	d := ms.data[key]
@@ -51,6 +73,22 @@ func (ms *MemStore) Set(key string, w io.WriterTo) error {
 	}
 	ms.set(key, d)
 	return nil
+}
+
+// SetAll set data for all of the keys given. Useful to reduce locking.
+// Will return the first error found, so may not set all data.
+func (ms *MemStore) SetAll(data map[string]io.WriterTo) error {
+	var err error
+	ms.mu.Lock()
+	for k, d := range data {
+		var buf memio.Buffer
+		if _, err = d.WriteTo(&buf); err != nil {
+			break
+		}
+		ms.data[k] = buf
+	}
+	ms.mu.Unlock()
+	return err
 }
 
 func (ms *MemStore) set(key string, d memio.Buffer) {
