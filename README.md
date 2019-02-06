@@ -120,10 +120,10 @@ func (t *Float32) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the float32 from the Reader
 
-#### func (*Float32) WriteTo
+#### func (Float32) WriteTo
 
 ```go
-func (t *Float32) WriteTo(w io.Writer) (int64, error)
+func (t Float32) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the float32 to the Writer
 
@@ -142,10 +142,10 @@ func (t *Float64) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the float64 from the Reader
 
-#### func (*Float64) WriteTo
+#### func (Float64) WriteTo
 
 ```go
-func (t *Float64) WriteTo(w io.Writer) (int64, error)
+func (t Float64) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the float64 to the Writer
 
@@ -164,10 +164,10 @@ func (t *Int16) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the int16 from the Reader
 
-#### func (*Int16) WriteTo
+#### func (Int16) WriteTo
 
 ```go
-func (t *Int16) WriteTo(w io.Writer) (int64, error)
+func (t Int16) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the int16 to the Writer
 
@@ -186,10 +186,10 @@ func (t *Int32) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the int32 from the Reader
 
-#### func (*Int32) WriteTo
+#### func (Int32) WriteTo
 
 ```go
-func (t *Int32) WriteTo(w io.Writer) (int64, error)
+func (t Int32) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the int32 to the Writer
 
@@ -208,10 +208,10 @@ func (t *Int64) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the int64 from the Reader
 
-#### func (*Int64) WriteTo
+#### func (Int64) WriteTo
 
 ```go
-func (t *Int64) WriteTo(w io.Writer) (int64, error)
+func (t Int64) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the int64 to the Writer
 
@@ -230,10 +230,10 @@ func (t *Int8) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the int8 from the Reader
 
-#### func (*Int8) WriteTo
+#### func (Int8) WriteTo
 
 ```go
-func (t *Int8) WriteTo(w io.Writer) (int64, error)
+func (t Int8) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the int8 to the Writer
 
@@ -347,10 +347,10 @@ func (t *String) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the string from the Reader
 
-#### func (*String) WriteTo
+#### func (String) WriteTo
 
 ```go
-func (t *String) WriteTo(w io.Writer) (int64, error)
+func (t String) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the string to the Writer
 
@@ -369,10 +369,10 @@ func (t *Uint16) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the uint16 from the Reader
 
-#### func (*Uint16) WriteTo
+#### func (Uint16) WriteTo
 
 ```go
-func (t *Uint16) WriteTo(w io.Writer) (int64, error)
+func (t Uint16) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the uint16 to the Writer
 
@@ -391,10 +391,10 @@ func (t *Uint32) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the uint32 from the Reader
 
-#### func (*Uint32) WriteTo
+#### func (Uint32) WriteTo
 
 ```go
-func (t *Uint32) WriteTo(w io.Writer) (int64, error)
+func (t Uint32) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the uint32 to the Writer
 
@@ -413,10 +413,10 @@ func (t *Uint64) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the uint64 from the Reader
 
-#### func (*Uint64) WriteTo
+#### func (Uint64) WriteTo
 
 ```go
-func (t *Uint64) WriteTo(w io.Writer) (int64, error)
+func (t Uint64) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the uint64 to the Writer
 
@@ -435,9 +435,9 @@ func (t *Uint8) ReadFrom(r io.Reader) (int64, error)
 ```
 ReadFrom decodes the uint8 from the Reader
 
-#### func (*Uint8) WriteTo
+#### func (Uint8) WriteTo
 
 ```go
-func (t *Uint8) WriteTo(w io.Writer) (int64, error)
+func (t Uint8) WriteTo(w io.Writer) (int64, error)
 ```
 WriteTo encodes the uint8 to the Writer
