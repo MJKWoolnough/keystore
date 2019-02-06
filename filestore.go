@@ -12,6 +12,7 @@ import (
 	"vimagination.zapto.org/errors"
 )
 
+// FileStore implements the Store interface and provides a file backed keystore
 type FileStore struct {
 	baseDir, tmpDir string
 	mangler         Mangler
@@ -44,6 +45,7 @@ func (fs *FileStore) init(baseDir, tmpDir string, mangler Mangler) error {
 	return nil
 }
 
+// Get retrieves the key data from the filesystem
 func (fs *FileStore) Get(key string, r io.ReaderFrom) error {
 	key = fs.mangleKey(key, false)
 	f, err := os.Open(filepath.Join(fs.baseDir, key))
@@ -58,6 +60,7 @@ func (fs *FileStore) Get(key string, r io.ReaderFrom) error {
 	return err
 }
 
+// Set stores the key data on the filesystem
 func (fs *FileStore) Set(key string, w io.WriterTo) error {
 	key = fs.mangleKey(key, true)
 	var (
@@ -88,6 +91,7 @@ func (fs *FileStore) Set(key string, w io.WriterTo) error {
 	return nil
 }
 
+// Remove deletes the key data from the filesystem
 func (fs *FileStore) Remove(key string) error {
 	key = fs.mangleKey(key, false)
 	if os.IsNotExist((os.Remove(filepath.Join(fs.baseDir, key)))) {

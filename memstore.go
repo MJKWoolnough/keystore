@@ -9,6 +9,7 @@ import (
 	"vimagination.zapto.org/memio"
 )
 
+// MemStore implements Store and does so entirely in memory
 type MemStore struct {
 	mu   sync.RWMutex
 	data map[string]memio.Buffer
@@ -25,6 +26,7 @@ func (ms *MemStore) init() {
 	ms.data = make(map[string]memio.Buffer)
 }
 
+// Get retrieves the key data from memory
 func (ms *MemStore) Get(key string, r io.ReaderFrom) error {
 	d := ms.get(key)
 	if d == nil {
@@ -41,6 +43,7 @@ func (ms *MemStore) get(key string) memio.Buffer {
 	return d
 }
 
+// Set stores the key data in memory
 func (ms *MemStore) Set(key string, w io.WriterTo) error {
 	d := make(memio.Buffer, 0)
 	if _, err := w.WriteTo(&d); err != nil && err != io.EOF {
@@ -56,6 +59,7 @@ func (ms *MemStore) set(key string, d memio.Buffer) {
 	ms.mu.Unlock()
 }
 
+// Remove deletes the key data from memory
 func (ms *MemStore) Remove(key string) error {
 	ms.mu.Lock()
 	_, ok := ms.data[key]
@@ -68,6 +72,8 @@ func (ms *MemStore) Remove(key string) error {
 	return nil
 }
 
+// WriteTo implements the io.WriterTo interface allowing a MemStore to be
+// be stored in another Store
 func (ms *MemStore) WriteTo(w io.Writer) (int64, error) {
 	lw := byteio.StickyLittleEndianWriter{Writer: w}
 	ms.mu.RLock()
@@ -80,6 +86,8 @@ func (ms *MemStore) WriteTo(w io.Writer) (int64, error) {
 	return lw.Count, lw.Err
 }
 
+// ReadFrom implements the io.ReaderFrom interface allowing a MemStore to be
+// be retrieved in another Store
 func (ms *MemStore) ReadFrom(r io.Reader) (int64, error) {
 	lr := byteio.StickyLittleEndianReader{Reader: r}
 	ms.mu.Lock()

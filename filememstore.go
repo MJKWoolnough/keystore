@@ -6,12 +6,13 @@ import (
 	"vimagination.zapto.org/memio"
 )
 
+// FileBackedMemStore combines both a FileStore and a MemStore
 type FileBackedMemStore struct {
 	fileStore FileStore
 	memStore  MemStore
 }
 
-// NewFileBackedMemStore create s new Store which uses the filesystem for
+// NewFileBackedMemStore create a new Store which uses the filesystem for
 // permanent storage, but uses memory for caching
 func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (*FileBackedMemStore, error) {
 	fs := new(FileBackedMemStore)
@@ -22,6 +23,8 @@ func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (*FileBacked
 	return fs, nil
 }
 
+// Get retrieves a key from the Store, first looking in the memcache and then
+// going to the filesystem
 func (fs *FileBackedMemStore) Get(key string, r io.ReaderFrom) error {
 	err := fs.memStore.Get(key, r)
 	if err == ErrUnknownKey {
@@ -36,6 +39,7 @@ func (fs *FileBackedMemStore) Get(key string, r io.ReaderFrom) error {
 	return err
 }
 
+// Set stores the key in both the memcache and the filesystem
 func (fs *FileBackedMemStore) Set(key string, w io.WriterTo) error {
 	var buf memio.Buffer
 	_, err := w.WriteTo(&buf)
@@ -50,6 +54,7 @@ func (fs *FileBackedMemStore) Set(key string, w io.WriterTo) error {
 	return nil
 }
 
+// Remove deletes a key from both the memcache and the filesystem
 func (fs *FileBackedMemStore) Remove(key string) error {
 	if err := fs.fileStore.Remove(key); err != nil {
 		return err
