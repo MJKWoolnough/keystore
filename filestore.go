@@ -168,8 +168,13 @@ func (base64Mangler) Decode(parts []string) (string, error) {
 
 type noMangle struct{}
 
-func (noMangle) Encode(name string) []string           { return []string{name} }
-func (noMangle) Decode(parts []string) (string, error) { return strings.Join(parts, ""), nil }
+func (noMangle) Encode(name string) []string {
+	return strings.Split(name, string(filepath.Separator))
+}
+
+func (noMangle) Decode(parts []string) (string, error) {
+	return strings.Join(parts, string(filepath.Separator)), nil
+}
 
 // Base64Mangler represents the default Mangler that simple base64 encodes the
 // key
