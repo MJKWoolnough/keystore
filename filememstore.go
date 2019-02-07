@@ -63,6 +63,22 @@ func (fs *FileBackedMemStore) Remove(key string) error {
 	return nil
 }
 
+// Clear removes keys from the memory cache. Specifying no keys removes all
+// data
+func (fs *FileBackedMemStore) Clear(keys ...string) {
+	fs.memStore.mu.Lock()
+	if len(keys) == 0 {
+		for key := range fs.memStore.data {
+			delete(fs.memStore.data, key)
+		}
+	} else {
+		for key := range keys {
+			delete(fs.memStore.data, key)
+		}
+	}
+	fs.memStore.mu.Unlock()
+}
+
 // Keys returns a sorted slice of all of the keys
 func (fs *FileBackedMemStore) Keys() []string {
 	return fs.fileStore.Keys()
