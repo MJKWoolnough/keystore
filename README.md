@@ -112,6 +112,13 @@ func (fs *FileStore) Set(key string, w io.WriterTo) error
 ```
 Set stores the key data on the filesystem
 
+#### func (*FileStore) Stat
+
+```go
+func (fs *FileStore) Stat(key string) (os.FileInfo, error)
+```
+Stat returns the FileInfo of the file relatining to the given key
+
 #### type Float32
 
 ```go

@@ -107,6 +107,11 @@ func (fs *FileStore) Keys() []string {
 	return s
 }
 
+// Stat returns the FileInfo of the file relatining to the given key
+func (fs *FileStore) Stat(key string) (os.FileInfo, error) {
+	return os.Stat(fs.mangleKey(key, false))
+}
+
 func (fs *FileStore) mangleKey(key string, prepare bool) string {
 	parts := fs.mangler.Encode(key)
 	if len(parts) == 0 {
