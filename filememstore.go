@@ -8,15 +8,15 @@ import (
 
 // FileBackedMemStore combines both a FileStore and a MemStore
 type FileBackedMemStore struct {
-	fileStore FileStore
-	memStore  MemStore
+	FileStore
+	memStore MemStore
 }
 
 // NewFileBackedMemStore create a new Store which uses the filesystem for
 // permanent storage, but uses memory for caching
 func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (*FileBackedMemStore, error) {
 	fs := new(FileBackedMemStore)
-	if err := fs.fileStore.init(baseDir, tmpDir, mangler); err != nil {
+	if err := fs.init(baseDir, tmpDir, mangler); err != nil {
 		return nil, err
 	}
 	fs.memStore.init()
@@ -29,7 +29,7 @@ func (fs *FileBackedMemStore) Get(key string, r io.ReaderFrom) error {
 	err := fs.memStore.Get(key, r)
 	if err == ErrUnknownKey {
 		var buf memio.Buffer
-		err = fs.fileStore.Get(key, &buf)
+		err = fs.FileStore.Get(key, &buf)
 		if err != nil {
 			return err
 		}
@@ -47,7 +47,7 @@ func (fs *FileBackedMemStore) Set(key string, w io.WriterTo) error {
 		return err
 	}
 	fbuf := buf
-	if err = fs.fileStore.Set(key, &fbuf); err != nil {
+	if err = fs.FileStore.Set(key, &fbuf); err != nil {
 		return err
 	}
 	fs.memStore.set(key, buf)
@@ -56,7 +56,7 @@ func (fs *FileBackedMemStore) Set(key string, w io.WriterTo) error {
 
 // Remove deletes a key from both the memcache and the filesystem
 func (fs *FileBackedMemStore) Remove(key string) error {
-	if err := fs.fileStore.Remove(key); err != nil {
+	if err := fs.FileStore.Remove(key); err != nil {
 		return err
 	}
 	fs.memStore.Remove(key)
@@ -77,9 +77,4 @@ func (fs *FileBackedMemStore) Clear(keys ...string) {
 		}
 	}
 	fs.memStore.mu.Unlock()
-}
-
-// Keys returns a sorted slice of all of the keys
-func (fs *FileBackedMemStore) Keys() []string {
-	return fs.fileStore.Keys()
 }
