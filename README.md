@@ -32,6 +32,13 @@ func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (*FileBacked
 NewFileBackedMemStore create a new Store which uses the filesystem for permanent
 storage, but uses memory for caching
 
+#### func (*FileBackedMemStore) Clear
+
+```go
+func (fs *FileBackedMemStore) Clear(keys ...string)
+```
+Clear removes keys from the memory cache. Specifying no keys removes all data
+
 #### func (*FileBackedMemStore) Get
 
 ```go
