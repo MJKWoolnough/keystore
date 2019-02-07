@@ -112,6 +112,12 @@ func (fs *FileStore) Stat(key string) (os.FileInfo, error) {
 	return os.Stat(filepath.Join(fs.baseDir, fs.mangleKey(key, false)))
 }
 
+// Exists returns true when the key exists within the store
+func (fs *FileStore) Exists(key string) bool {
+	_, err := os.Stat(filepath.Join(fs.baseDir, fs.mangleKey(key, false)))
+	return err == nil
+}
+
 func (fs *FileStore) mangleKey(key string, prepare bool) string {
 	parts := fs.mangler.Encode(key)
 	if len(parts) == 0 {

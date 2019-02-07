@@ -19,6 +19,7 @@ Errors
 
 ```go
 type FileBackedMemStore struct {
+	FileStore
 }
 ```
 
@@ -46,13 +47,6 @@ func (fs *FileBackedMemStore) Get(key string, r io.ReaderFrom) error
 ```
 Get retrieves a key from the Store, first looking in the memcache and then going
 to the filesystem
-
-#### func (*FileBackedMemStore) Keys
-
-```go
-func (fs *FileBackedMemStore) Keys() []string
-```
-Keys returns a sorted slice of all of the keys
 
 #### func (*FileBackedMemStore) Remove
 
@@ -83,6 +77,13 @@ FileStore implements the Store interface and provides a file backed keystore
 func NewFileStore(baseDir, tmpDir string, mangler Mangler) (*FileStore, error)
 ```
 NewFileStore creates a file backed key-value store
+
+#### func (*FileStore) Exists
+
+```go
+func (fs *FileStore) Exists(key string) bool
+```
+Exists returns true when the key exists within the store
 
 #### func (*FileStore) Get
 
@@ -310,6 +311,13 @@ MemStore implements Store and does so entirely in memory
 func NewMemStore() *MemStore
 ```
 NewMemStore creates a new memory-backed key-value store
+
+#### func (*MemStore) Exists
+
+```go
+func (ms *MemStore) Exists(key string) bool
+```
+Exists returns true when the key exists within the store
 
 #### func (*MemStore) Get
 

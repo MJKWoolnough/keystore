@@ -153,3 +153,11 @@ func (ms *MemStore) Keys() []string {
 	sort.Strings(s)
 	return s
 }
+
+// Exists returns true when the key exists within the store
+func (ms *MemStore) Exists(key string) bool {
+	ms.mu.RLock()
+	_, ok := ms.data[key]
+	ms.mu.RUnlock()
+	return ok
+}
