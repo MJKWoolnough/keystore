@@ -109,7 +109,7 @@ func (fs *FileStore) Keys() []string {
 
 // Stat returns the FileInfo of the file relatining to the given key
 func (fs *FileStore) Stat(key string) (os.FileInfo, error) {
-	return os.Stat(fs.mangleKey(key, false))
+	return os.Stat(filepath.Join(fs.baseDir, fs.mangleKey(key, false)))
 }
 
 func (fs *FileStore) mangleKey(key string, prepare bool) string {
