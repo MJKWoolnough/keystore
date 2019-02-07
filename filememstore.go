@@ -72,7 +72,7 @@ func (fs *FileBackedMemStore) Clear(keys ...string) {
 			delete(fs.memStore.data, key)
 		}
 	} else {
-		for key := range keys {
+		for _, key := range keys {
 			delete(fs.memStore.data, key)
 		}
 	}
