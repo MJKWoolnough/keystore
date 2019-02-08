@@ -127,7 +127,7 @@ func (fs *FileStore) mangleKey(key string, prepare bool) string {
 	} else if prepare {
 		os.MkdirAll(filepath.Join(append([]string{fs.baseDir}, parts...)...), 0700)
 	}
-	return strings.Join(parts, string(filepath.Separator))
+	return filepath.Clean("/" + strings.Join(parts, string(filepath.Separator)))[1:]
 }
 
 func (fs *FileStore) getDirContents(dir string) []string {
