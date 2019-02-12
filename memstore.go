@@ -137,9 +137,16 @@ func (ms *MemStore) ReadFrom(r io.Reader) (int64, error) {
 	ms.mu.Lock()
 	for {
 		key := lr.ReadStringX()
+		if lr.Err == io.EOF {
+			lr.Err = nil
+			break
+		}
 		buf := make(memio.Buffer, lr.ReadUintX())
 		lr.Read(buf)
 		if lr.Err != nil {
+			if err == io.EOF {
+				lr.Err = io.ErrUnexpectedEOF
+			}
 			break
 		}
 		ms.data[key] = buf
