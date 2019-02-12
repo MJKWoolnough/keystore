@@ -37,19 +37,15 @@ func (ms *MemStore) Get(key string, r io.ReaderFrom) error {
 }
 
 // GetAll retrieves data for all of the keys given. Useful to reduce locking.
-// If any of the keys do not exist no data will be read.
+// Unknown Key errors are not returned, only errors from the ReaderFrom's
 func (ms *MemStore) GetAll(data map[string]io.ReaderFrom) error {
 	var err error
 	ms.mu.RLock()
-	for k := range data {
-		_, ok := ms.data[k]
-		if !ok {
-			ms.mu.RUnlock()
-			return ErrUnknownKey
-		}
-	}
 	for k, d := range data {
-		buf := ms.data[k]
+		buf, ok := ms.data[k]
+		if !ok {
+			continue
+		}
 		if _, err = d.ReadFrom(&buf); err != nil {
 			return err
 		}
