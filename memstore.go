@@ -144,7 +144,7 @@ func (ms *MemStore) ReadFrom(r io.Reader) (int64, error) {
 		buf := make(memio.Buffer, lr.ReadUintX())
 		lr.Read(buf)
 		if lr.Err != nil {
-			if err == io.EOF {
+			if lr.Err == io.EOF {
 				lr.Err = io.ErrUnexpectedEOF
 			}
 			break
