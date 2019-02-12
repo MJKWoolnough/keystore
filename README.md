@@ -356,6 +356,14 @@ func (ms *MemStore) Remove(key string) error
 ```
 Remove deletes the key data from memory
 
+#### func (*MemStore) RemoveAll
+
+```go
+func (ms *MemStore) RemoveAll(keys ...string)
+```
+RemoveAll will attempt to remove all keys given. It does not return an error if
+a key doesn't exist
+
 #### func (*MemStore) Set
 
 ```go

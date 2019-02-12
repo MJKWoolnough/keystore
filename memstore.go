@@ -106,6 +106,16 @@ func (ms *MemStore) Remove(key string) error {
 	return nil
 }
 
+// RemoveAll will attempt to remove all keys given. It does not return an error
+// if a key doesn't exist
+func (ms *MemStore) RemoveAll(keys ...string) {
+	ms.mu.Lock()
+	for _, key := range keys {
+		delete(ms.data, key)
+	}
+	ms.mu.Unlock()
+}
+
 // WriteTo implements the io.WriterTo interface allowing a MemStore to be
 // be stored in another Store
 func (ms *MemStore) WriteTo(w io.Writer) (int64, error) {
