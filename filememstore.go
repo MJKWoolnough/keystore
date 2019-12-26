@@ -78,3 +78,15 @@ func (fs *FileBackedMemStore) Clear(keys ...string) {
 	}
 	fs.memStore.mu.Unlock()
 }
+
+// Rename moves data from an existing key to a new, unused key
+func (fs *FileBackedMemStore) Rename(oldkey, newkey string) error {
+	fs.memStore.mu.Lock()
+	if err := fs.FileStore.Rename(oldkey, newkey); err != nil {
+		fs.memStore.mu.Unlock()
+		return err
+	}
+	delete(fs.memStore.data, oldkey)
+	fs.memStore.mu.Unlock()
+	return nil
+}

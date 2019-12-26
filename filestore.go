@@ -118,6 +118,11 @@ func (fs *FileStore) Exists(key string) bool {
 	return err == nil
 }
 
+// Rename moves data from an existing key to a new, unused key
+func (fs *FileStore) Rename(oldkey, newkey string) error {
+	return os.Rename(filepath.Join(fs.baseDir, fs.mangleKey(oldkey, false)), filepath.Join(fs.baseDir, fs.mangleKey(newkey, true)))
+}
+
 func (fs *FileStore) mangleKey(key string, prepare bool) string {
 	parts := fs.mangler.Encode(key)
 	if len(parts) == 0 {

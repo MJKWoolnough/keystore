@@ -174,3 +174,19 @@ func (ms *MemStore) Exists(key string) bool {
 	ms.mu.RUnlock()
 	return ok
 }
+
+// Rename moves data from an existing key to a new, unused key
+func (ms *MemStore) Rename(oldkey, newkey string) error {
+	ms.mu.Lock()
+	var err error
+	if d, ok := ms.data[oldkey]; !ok {
+		err = ErrUnknownKey
+	} else if _, ok = ms.data[newkey]; ok {
+		err = ErrKeyExists
+	} else {
+		ms.data[newkey] = d
+		delete(ms.data, oldkey)
+	}
+	ms.mu.Unlock()
+	return err
+}
