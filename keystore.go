@@ -12,6 +12,7 @@ type Store interface {
 	Set(string, io.WriterTo) error
 	Remove(string) error
 	Keys() []string
+	Rename(string, string) error
 }
 
 // Errors
