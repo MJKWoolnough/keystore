@@ -8,12 +8,22 @@ Package keystore is a simple key-value storage system with file and memory
 ## Usage
 
 ```go
-const (
-	ErrUnknownKey errors.Error = "key not found"
-	ErrInvalidKey errors.Error = "key contains invalid characters"
+var (
+	ErrUnknownKey = errors.New("key not found")
+	ErrKeyExists  = errors.New("key already exists")
+	ErrInvalidKey = errors.New("key contains invalid characters")
 )
 ```
 Errors
+
+```go
+var (
+	ReaderPool = readerPool{
+	}
+	WriterPool = writerPool{
+	}
+)
+```
 
 #### type FileBackedMemStore
 
@@ -54,6 +64,13 @@ to the filesystem
 func (fs *FileBackedMemStore) Remove(key string) error
 ```
 Remove deletes a key from both the memcache and the filesystem
+
+#### func (*FileBackedMemStore) Rename
+
+```go
+func (fs *FileBackedMemStore) Rename(oldkey, newkey string) error
+```
+Rename moves data from an existing key to a new, unused key
 
 #### func (*FileBackedMemStore) Set
 
@@ -105,6 +122,13 @@ Keys returns a sorted slice of all of the keys
 func (fs *FileStore) Remove(key string) error
 ```
 Remove deletes the key data from the filesystem
+
+#### func (*FileStore) Rename
+
+```go
+func (fs *FileStore) Rename(oldkey, newkey string) error
+```
+Rename moves data from an existing key to a new, unused key
 
 #### func (*FileStore) Set
 
@@ -331,8 +355,8 @@ Get retrieves the key data from memory
 ```go
 func (ms *MemStore) GetAll(data map[string]io.ReaderFrom) error
 ```
-GetAll retrieves data for all of the keys given. Useful to reduce locking. If
-any of the keys do not exist no data will be read.
+GetAll retrieves data for all of the keys given. Useful to reduce locking.
+Unknown Key errors are not returned, only errors from the ReaderFrom's
 
 #### func (*MemStore) Keys
 
@@ -363,6 +387,13 @@ func (ms *MemStore) RemoveAll(keys ...string)
 ```
 RemoveAll will attempt to remove all keys given. It does not return an error if
 a key doesn't exist
+
+#### func (*MemStore) Rename
+
+```go
+func (ms *MemStore) Rename(oldkey, newkey string) error
+```
+Rename moves data from an existing key to a new, unused key
 
 #### func (*MemStore) Set
 
@@ -395,6 +426,7 @@ type Store interface {
 	Set(string, io.WriterTo) error
 	Remove(string) error
 	Keys() []string
+	Rename(string, string) error
 }
 ```
 
