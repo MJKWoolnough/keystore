@@ -2,9 +2,8 @@
 package keystore // import "vimagination.zapto.org/keystore"
 
 import (
+	"errors"
 	"io"
-
-	"vimagination.zapto.org/errors"
 )
 
 // Store represents the methods required for a Keystore
@@ -16,7 +15,8 @@ type Store interface {
 }
 
 // Errors
-const (
-	ErrUnknownKey errors.Error = "key not found"
-	ErrInvalidKey errors.Error = "key contains invalid characters"
+var (
+	ErrUnknownKey = errors.New("key not found")
+	ErrKeyExists  = errors.New("key already exists")
+	ErrInvalidKey = errors.New("key contains invalid characters")
 )
