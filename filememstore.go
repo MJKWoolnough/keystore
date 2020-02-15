@@ -26,10 +26,11 @@ func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (*FileBacked
 // NewFileBackedMemStoreFromFileStore uses an existing FileStore to create a
 // new File Backed Memory Store
 func NewFileBackedMemStoreFromFileStore(filestore *FileStore) *FileBackedMemStore {
-	fs := new(FileBackedMemStore)
-	fs.FileStore = *filestore
+	fs := &FileBackedMemStore{
+		FileStore: *filestore,
+	}
 	fs.memStore.init()
-	return fs, nil
+	return fs
 }
 
 // Get retrieves a key from the Store, first looking in the memcache and then
