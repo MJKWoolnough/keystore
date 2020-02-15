@@ -25,7 +25,7 @@ func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (*FileBacked
 
 // NewFileBackedMemStoreFromFileStore uses an existing FileStore to create a
 // new File Backed Memory Store
-func NewFileBackedMemStoreFromFileStore(filestore *FileStore) {
+func NewFileBackedMemStoreFromFileStore(filestore *FileStore) *FileBackedMemStore {
 	fs := new(FileBackedMemStore)
 	fs.FileStore = *filestore
 	fs.memStore.init()
