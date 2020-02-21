@@ -2,14 +2,13 @@ package keystore
 
 import (
 	"encoding/base64"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
 	"strings"
-
-	"vimagination.zapto.org/errors"
 )
 
 // FileStore implements the Store interface and provides a file backed keystore
@@ -29,14 +28,14 @@ func NewFileStore(baseDir, tmpDir string, mangler Mangler) (*FileStore, error) {
 
 func (fs *FileStore) init(baseDir, tmpDir string, mangler Mangler) error {
 	if err := os.MkdirAll(baseDir, 0700); err != nil {
-		return errors.WithContext("error creating data dir: ", err)
+		return fmt.Errorf("error creating data dir: %w", err)
 	}
 	if mangler == nil {
 		mangler = base64Mangler{}
 	}
 	if tmpDir != "" {
 		if err := os.MkdirAll(tmpDir, 0700); err != nil {
-			return errors.WithContext("error creating temp dir: ", err)
+			return fmt.Errorf("error creating temp dir: %w", err)
 		}
 	}
 	fs.baseDir = baseDir
@@ -53,7 +52,7 @@ func (fs *FileStore) Get(key string, r io.ReaderFrom) error {
 		if os.IsNotExist(err) {
 			return ErrUnknownKey
 		}
-		return errors.WithContext("error opening key file: ", err)
+		return fmt.Errorf("error opening key file: %w", err)
 	}
 	_, err = r.ReadFrom(f)
 	f.Close()
@@ -73,19 +72,19 @@ func (fs *FileStore) Set(key string, w io.WriterTo) error {
 		f, err = os.Create(filepath.Join(fs.baseDir, key))
 	}
 	if err != nil {
-		return errors.WithContext("error opening file for writing: ", err)
+		return fmt.Errorf("error opening file for writing: %w", err)
 	}
 	if _, err = w.WriteTo(f); err != nil && err != io.EOF {
 		f.Close()
-		return errors.WithContext("error writing to file: ", err)
+		return fmt.Errorf("error writing to file: %w", err)
 	} else if err = f.Close(); err != nil {
-		return errors.WithContext("error closing file: ", err)
+		return fmt.Errorf("error closing file: %w", err)
 	}
 	if fs.tmpDir != "" {
 		fp := f.Name()
 		if err = os.Rename(fp, filepath.Join(fs.baseDir, key)); err != nil {
 			os.Remove(fp)
-			return errors.WithContext("error moving tmp file: ", err)
+			return fmt.Errorf("error moving tmp file: %w", err)
 		}
 	}
 	return nil
