@@ -69,8 +69,7 @@ func (fs *FileBackedMemStore) Remove(key string) error {
 	if err := fs.FileStore.Remove(key); err != nil {
 		return err
 	}
-	fs.memStore.Remove(key)
-	return nil
+	return fs.memStore.Remove(key)
 }
 
 // Clear removes keys from the memory cache. Specifying no keys removes all
