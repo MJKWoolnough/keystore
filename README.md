@@ -16,15 +16,6 @@ var (
 ```
 Errors
 
-```go
-var (
-	ReaderPool = readerPool{
-	}
-	WriterPool = writerPool{
-	}
-)
-```
-
 #### type FileBackedMemStore
 
 ```go
@@ -42,6 +33,14 @@ func NewFileBackedMemStore(baseDir, tmpDir string, mangler Mangler) (*FileBacked
 ```
 NewFileBackedMemStore create a new Store which uses the filesystem for permanent
 storage, but uses memory for caching
+
+#### func  NewFileBackedMemStoreFromFileStore
+
+```go
+func NewFileBackedMemStoreFromFileStore(filestore *FileStore) *FileBackedMemStore
+```
+NewFileBackedMemStoreFromFileStore uses an existing FileStore to create a new
+File Backed Memory Store
 
 #### func (*FileBackedMemStore) Clear
 
