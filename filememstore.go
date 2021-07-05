@@ -40,11 +40,10 @@ func (fs *FileBackedMemStore) Get(key string, r io.ReaderFrom) error {
 	if err == ErrUnknownKey {
 		var buf memio.Buffer
 		err = fs.FileStore.Get(key, &buf)
-		if err != nil {
-			return err
+		if err == nil {
+			fs.memStore.set(key, buf)
+			_, err = r.ReadFrom(&buf)
 		}
-		fs.memStore.set(key, buf)
-		_, err = r.ReadFrom(&buf)
 	}
 	return err
 }
