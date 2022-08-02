@@ -27,14 +27,14 @@ func NewFileStore(baseDir, tmpDir string, mangler Mangler) (*FileStore, error) {
 }
 
 func (fs *FileStore) init(baseDir, tmpDir string, mangler Mangler) error {
-	if err := os.MkdirAll(baseDir, 0700); err != nil {
+	if err := os.MkdirAll(baseDir, 0o700); err != nil {
 		return fmt.Errorf("error creating data dir: %w", err)
 	}
 	if mangler == nil {
 		mangler = base64Mangler{}
 	}
 	if tmpDir != "" {
-		if err := os.MkdirAll(tmpDir, 0700); err != nil {
+		if err := os.MkdirAll(tmpDir, 0o700); err != nil {
 			return fmt.Errorf("error creating temp dir: %w", err)
 		}
 	}
@@ -129,7 +129,7 @@ func (fs *FileStore) mangleKey(key string, prepare bool) string {
 	} else if len(parts) == 1 {
 		return parts[0]
 	} else if prepare {
-		os.MkdirAll(filepath.Join(append([]string{fs.baseDir}, parts...)...), 0700)
+		os.MkdirAll(filepath.Join(append([]string{fs.baseDir}, parts...)...), 0o700)
 	}
 	return filepath.Clean("/" + strings.Join(parts, string(filepath.Separator)))[1:]
 }
