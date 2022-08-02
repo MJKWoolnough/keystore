@@ -4,7 +4,6 @@ import (
 	"encoding/base64"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -67,7 +66,7 @@ func (fs *FileStore) Set(key string, w io.WriterTo) error {
 		err error
 	)
 	if fs.tmpDir != "" {
-		f, err = ioutil.TempFile(fs.tmpDir, "keystore")
+		f, err = os.CreateTemp(fs.tmpDir, "keystore")
 	} else {
 		f, err = os.Create(filepath.Join(fs.baseDir, key))
 	}
