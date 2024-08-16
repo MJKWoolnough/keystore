@@ -6,7 +6,7 @@ allTypes="String Uint8 Uint16 Uint32 Uint64 Uint Int8 Int16 Int32 Int64 Int Floa
 	cat <<HEREDOC
 package keystore
 
-// File automatically generated with ./types.sh
+// File automatically generated with ./types.sh.
 
 import (
 	"io"
@@ -22,13 +22,16 @@ type readerPool struct {
 func (rp *readerPool) Get(r io.Reader) *byteio.StickyLittleEndianReader {
 	lr := rp.pool.Get().(*byteio.StickyLittleEndianReader)
 	lr.Reader = r
+
 	return lr
 }
 
 func (rp *readerPool) Put(lr *byteio.StickyLittleEndianReader) (int64, error) {
 	c, err := lr.Count, lr.Err
 	*lr = byteio.StickyLittleEndianReader{}
+
 	rp.pool.Put(lr)
+
 	return c, err
 }
 
@@ -39,27 +42,30 @@ type writerPool struct {
 func (wp *writerPool) Get(w io.Writer) *byteio.StickyLittleEndianWriter {
 	lw := wp.pool.Get().(*byteio.StickyLittleEndianWriter)
 	lw.Writer = w
+
 	return lw
 }
 
 func (wp *writerPool) Put(lw *byteio.StickyLittleEndianWriter) (int64, error) {
 	c, err := lw.Count, lw.Err
 	*lw = byteio.StickyLittleEndianWriter{}
+
 	wp.pool.Put(lw)
+
 	return c, err
 }
 
 var (
-	aReaderPool = readerPool {
-		pool: sync.Pool {
+	aReaderPool = readerPool{
+		pool: sync.Pool{
 			New: func() interface{} {
 				return new(byteio.StickyLittleEndianReader)
 			},
 		},
 	}
-	aWriterPool = writerPool {
-		pool: sync.Pool {
-			New: func() interface {} {
+	aWriterPool = writerPool{
+		pool: sync.Pool{
+			New: func() interface{} {
 				return new(byteio.StickyLittleEndianWriter)
 			},
 		},
@@ -77,20 +83,23 @@ HEREDOC
 		}
 		cat <<HEREDOC
 
-// $typeName is a $type that implements io.ReaderFrom and io.WriterTo
+// $typeName is a $type that implements io.ReaderFrom and io.WriterTo.
 type $typeName $type
 
-// ReadFrom decodes the $type from the Reader
+// ReadFrom decodes the $type from the Reader.
 func (t *$typeName) ReadFrom(r io.Reader) (int64, error) {
 	lr := aReaderPool.Get(r)
 	*t = $typeName(lr.Read$fName())
+
 	return aReaderPool.Put(lr)
 }
 
-// WriteTo encodes the $type to the Writer
+// WriteTo encodes the $type to the Writer.
 func (t $typeName) WriteTo(w io.Writer) (int64, error) {
 	lw := aWriterPool.Get(w)
+
 	lw.Write$fName($wType(t))
+
 	return aWriterPool.Put(lw)
 }
 HEREDOC
@@ -101,7 +110,7 @@ HEREDOC
 	cat <<HEREDOC
 package keystore
 
-// File automatically generated with ./types.sh
+// File automatically generated with ./types.sh.
 
 import "io"
 
