@@ -1,4 +1,4 @@
-// Package keystore is a simple key-value storage system with file and memory backing
+// Package keystore is a simple key-value storage system with file and memory backing.
 package keystore // import "vimagination.zapto.org/keystore"
 
 import (
@@ -6,7 +6,7 @@ import (
 	"io"
 )
 
-// Store represents the methods required for a Keystore
+// Store represents the methods required for a Keystore.
 type Store interface {
 	Get(string, io.ReaderFrom) error
 	Set(string, io.WriterTo) error
@@ -15,7 +15,7 @@ type Store interface {
 	Rename(string, string) error
 }
 
-// Errors
+// Errors.
 var (
 	ErrUnknownKey = errors.New("key not found")
 	ErrKeyExists  = errors.New("key already exists")
