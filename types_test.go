@@ -1,6 +1,6 @@
 package keystore
 
-// File automatically generated with ./types.sh
+// File automatically generated with ./types.sh.
 
 import "io"
 
