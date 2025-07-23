@@ -104,7 +104,7 @@ func (t $typeName) WriteTo(w io.Writer) (int64, error) {
 }
 HEREDOC
 	done;
-) > types.go
+) > types.go;
 
 (
 	cat <<HEREDOC
