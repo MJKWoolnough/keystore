@@ -9,7 +9,9 @@ import (
 
 func testStore(t *testing.T, s Store) {
 	const testData = "Hello, World!"
+
 	var buf memio.Buffer
+
 	if err := s.Get("none", &buf); err != ErrUnknownKey {
 		t.Errorf("test 1: expecting error ErrUnknownKey, got %s", err)
 	} else if len(buf) > 0 {
@@ -26,6 +28,7 @@ func testStore(t *testing.T, s Store) {
 		t.Errorf("test 5: received data when expecting none.")
 	} else {
 		buf = memio.Buffer(testData)
+
 		if err = s.Set("key2", &buf); err != nil {
 			t.Errorf("test 6: unexpected error: %s", err)
 		} else if len(buf) > 0 {
