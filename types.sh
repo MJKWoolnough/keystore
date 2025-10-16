@@ -10,66 +10,8 @@ package keystore
 
 import (
 	"io"
-	"sync"
 
 	"vimagination.zapto.org/byteio"
-)
-
-type readerPool struct {
-	pool sync.Pool
-}
-
-func (rp *readerPool) Get(r io.Reader) *byteio.StickyLittleEndianReader {
-	lr := rp.pool.Get().(*byteio.StickyLittleEndianReader)
-	lr.Reader = r
-
-	return lr
-}
-
-func (rp *readerPool) Put(lr *byteio.StickyLittleEndianReader) (int64, error) {
-	c, err := lr.Count, lr.Err
-	*lr = byteio.StickyLittleEndianReader{}
-
-	rp.pool.Put(lr)
-
-	return c, err
-}
-
-type writerPool struct {
-	pool sync.Pool
-}
-
-func (wp *writerPool) Get(w io.Writer) *byteio.StickyLittleEndianWriter {
-	lw := wp.pool.Get().(*byteio.StickyLittleEndianWriter)
-	lw.Writer = w
-
-	return lw
-}
-
-func (wp *writerPool) Put(lw *byteio.StickyLittleEndianWriter) (int64, error) {
-	c, err := lw.Count, lw.Err
-	*lw = byteio.StickyLittleEndianWriter{}
-
-	wp.pool.Put(lw)
-
-	return c, err
-}
-
-var (
-	aReaderPool = readerPool{
-		pool: sync.Pool{
-			New: func() interface{} {
-				return new(byteio.StickyLittleEndianReader)
-			},
-		},
-	}
-	aWriterPool = writerPool{
-		pool: sync.Pool{
-			New: func() interface{} {
-				return new(byteio.StickyLittleEndianWriter)
-			},
-		},
-	}
 )
 HEREDOC
 	for typeName in $allTypes; do
@@ -88,19 +30,19 @@ type $typeName $type
 
 // ReadFrom decodes the $type from the Reader.
 func (t *$typeName) ReadFrom(r io.Reader) (int64, error) {
-	lr := aReaderPool.Get(r)
-	*t = $typeName(lr.Read$fName())
+	lr := byteio.LittleEndianReader{Reader: r}
+	v, n, err := lr.Read$fName()
+	*t = $typeName(v)
 
-	return aReaderPool.Put(lr)
+	return int64(n), err
 }
 
 // WriteTo encodes the $type to the Writer.
 func (t $typeName) WriteTo(w io.Writer) (int64, error) {
-	lw := aWriterPool.Get(w)
+	lw := byteio.LittleEndianWriter{Writer: w}
+	n, err := lw.Write$fName($wType(t))
 
-	lw.Write$fName($wType(t))
-
-	return aWriterPool.Put(lw)
+	return int64(n), err
 }
 HEREDOC
 	done;
